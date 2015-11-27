@@ -26,6 +26,8 @@ Rules
 		3. 2 Thakur's are seperated/connected by a single mazdoor(Diagnol does not count)
 	* If an edge cell has a direction pointing out the inhabitants enter from the opposite side(So a north cell pointing north, will cause the inhabitant to land up on the south edge)
 	* Corners follow the same rule, except they land on the diagnolly opposite end
+	* If two mazdoor's land on the same cell, they die
+	* If two mazdoor's land next to each other, they produce a new mazdoor in any one of the adjacent cells
 	* Every 20 iterations, the directions of the cells change
 
 Objective: Develop a board with longest living inhabitants(max iterations)
