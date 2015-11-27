@@ -1,8 +1,11 @@
+(Fork repo and build Thakur's world)
+
 Thakur's game of life
+=====================
 
 The game works on the principle of a special species that are not meant to discover each other. 
 The world is divided into 2 species
-* the "Thakur's". A species that is not permitted to disover others of its kind. 
+* the "Thakur's". A species that is not permitted to discover others of its kind. 
 * the "mazdoors". Normal inhabitants of the world
 
 
