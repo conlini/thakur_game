@@ -7,7 +7,7 @@ The world is divided into 2 species
 
 
 Rules
-* The world is built of a 2D board M x N where M x N * 40.
+* The world is built of a 2D board M x N where M x N > 40.
 * The game starts with the following players
 	* There are 5% of Thakur's in the world randomly places based on the following rules
 		1. 2 Thakur's can not be intially placed adjacent to each other(Diagnols do not count)
