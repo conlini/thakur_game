@@ -9,11 +9,11 @@ The world is divided into 2 species
 Rules
 * The world is built of a 2D board M x N where M x N > 40.
 * The game starts with the following players
-	* There are 5% of Thakur's in the world randomly places based on the following rules
+	* There are 5% of Thakur's in the world randomly placed based on the following rules
 		1. 2 Thakur's can not be intially placed adjacent to each other(Diagnols do not count)
-		2. 2 Thankurs can not be placed on the same cell
-		3. 2 Thakur's shall not be intially placed in a single line with a single mazdoor in between(that is to say two Thakur's will not be seperated by a single mazdoor){Diagnols do not count}
-	*  There will be 20% of mazdoors on the board randomly places and adhering to rule 3 above
+		2. 2 Thakur's can not be placed on the same cell
+		3. 2 Thakur's shall not be intially placed in a single line with a single mazdoor in between(that is to say two Thakur's will not be seperated/connected by a single mazdoor){Diagnols do not count}
+	*  There will be 20% of mazdoors on the board randomly placed and adhering to rule 3 above
 * Each cell on the board will be assigned a Random direction(North/South/East/West).
 * The game runs as follows
 	* Each turn the inhabitants of the world move one step based on the direction as indicated by the block they occupy.
