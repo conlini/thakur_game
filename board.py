@@ -24,7 +24,6 @@ class Cell(object):
 
     def move(self):
         self.next_cell.new_occupant = self.current_occupant
-        print("moved from {} x {} to {} x {}".format(self.m, self.n , self.next_cell.m, self.next_cell.n))
         self.current_occupant = None
 
     def commit_move(self):
@@ -109,9 +108,10 @@ class Board(object):
     def __repr__(self):
         answer = ""
         for i,cell in enumerate(self.cells):
-            answer += str(self.cells[i])
-            if (i % self.n) ==0:
+            if i > 0 and (i % self.n) ==0:
+                print(i)
                 answer += "\n"
+            answer += str(self.cells[i])
         return answer
 
     def __str__(self):
@@ -124,6 +124,7 @@ if __name__ == "__main__":
     else:
         m, n, thakurs, mazdoors = [int(a) for a in input("Enter m, n, thakurs, mazdoors:").strip().split(",")]
     board = Board(m, n, thakurs, mazdoors)
+    print(board)
     board.move()
     print(board)
     # living = True
