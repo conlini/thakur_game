@@ -39,6 +39,7 @@ class Cell(object):
     def __str__(self):
         return self.__repr__()
 
+
 class Board(object):
     class Direction(Enum):
         NORTH = (0, 1),
@@ -62,30 +63,36 @@ class Board(object):
         for i, cell in enumerate(self.cells):
             direction = choice(list(Board.Direction))
             if direction is Board.Direction.NORTH:
-                if (i + self.n) >= (m*n):
-                    cell_pos = (i + self.n) - m*n
+                if (i + self.n) >= (m * n):
+                    cell_pos = (i + self.n) - m * n
                 else:
                     cell_pos = i + self.n
                 cell.next_cell = self.cells[cell_pos]
             elif direction is Board.Direction.SOUTH:
                 if (i - self.n) < 0:
-                    cell_pos = (i - self.n) + m*n
+                    cell_pos = (i - self.n) + m * n
                 else:
                     cell_pos = i - self.n
                 cell.next_cell = self.cells[cell_pos]
             elif direction is Board.Direction.EAST:
-                cell_pos = i-1
+                cell_pos = i - 1
                 if cell_pos < 0:
                     cell_pos = cell_pos + self.n
                 cell.next_cell = self.cells[cell_pos]
             else:
-                cell_pos = i+ 1
-                if cell_pos >= m*n:
+                cell_pos = i + 1
+                if cell_pos >= m * n:
                     cell_pos = cell_pos - self.n
                 cell.next_cell = self.cells[cell_pos]
 
-    def __check_rules(self):
-        pass
+    def __check_rules(self, possible_pos, inhabitant, thakur):
+        # west
+        cell_pos = possible_pos + 1
+        if cell_pos >= m * n:
+            cell_pos = cell_pos - self.n
+        current = self.cells[cell_pos].current_occupant
+        if current:
+            pass
 
     def populate_board(self, thakurs, mazdoors):
         for i in range(thakurs):
@@ -94,7 +101,7 @@ class Board(object):
                 possible_pos = randint(0, m * n)
             self.cells[possible_pos].occupy(Inhabitant.THAKUR)
         for i in range(mazdoors):
-            possible_pos = randint(0, (m * n)-1)
+            possible_pos = randint(0, (m * n) - 1)
             while (self.cells[possible_pos].current_occupant is not None):
                 possible_pos = randint(0, m * n)
             self.cells[possible_pos].occupy(Inhabitant.MAZDOOR)
@@ -107,9 +114,8 @@ class Board(object):
 
     def __repr__(self):
         answer = ""
-        for i,cell in enumerate(self.cells):
-            if i > 0 and (i % self.n) ==0:
-                print(i)
+        for i, cell in enumerate(self.cells):
+            if i > 0 and (i % self.n) == 0:
                 answer += "\n"
             answer += str(self.cells[i])
         return answer
@@ -122,11 +128,13 @@ if __name__ == "__main__":
     if len(sys.argv) == 5:
         m, n, thakurs, mazdoors = sys.argv[1:]
     else:
-        m, n, thakurs, mazdoors = [int(a) for a in input("Enter m, n, thakurs, mazdoors:").strip().split(",")]
+        m, n, thakurs, mazdoors, iterations = [int(a) for a in input("Enter m, n, thakurs, mazdoors, iterations:").strip().split(",")]
     board = Board(m, n, thakurs, mazdoors)
     print(board)
-    board.move()
-    print(board)
+    for i in range(iterations):
+        board.move()
+        print("================== ITERATION {} ==================".format(iterations))
+        print(board)
     # living = True
     # iterations = 0
     # while (living):
