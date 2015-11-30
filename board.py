@@ -133,13 +133,13 @@ class Board(object):
                         (east and east ==Inhabitant.MAZDOOR) or\
                         (west and west == Inhabitant.MAZDOOR):
                             if not north:
-                                neighbour_cells[Board.Direction.NORTH].occupy(Inhabitant.MAZDOOR)
+                                self.cells[neighbour_cells[Board.Direction.NORTH]].occupy(Inhabitant.MAZDOOR)
                             elif not south:
-                                neighbour_cells[Board.Direction.SOUTH].occupy(Inhabitant.MAZDOOR)
+                                self.cells[neighbour_cells[Board.Direction.SOUTH]].occupy(Inhabitant.MAZDOOR)
                             elif not east:
-                                neighbour_cells[Board.Direction.EAST].occupy(Inhabitant.MAZDOOR)
+                                self.cells[neighbour_cells[Board.Direction.EAST]].occupy(Inhabitant.MAZDOOR)
                             else:
-                                neighbour_cells[Board.Direction.WEST].occupy(Inhabitant.MAZDOOR)
+                                self.cells[neighbour_cells[Board.Direction.WEST]].occupy(Inhabitant.MAZDOOR)
 
         return True
 
@@ -167,7 +167,7 @@ class Board(object):
         for cell in self.cells:
             if cell.current_occupant:
                 has_occupant = True
-                if not self.__check_rules(i, cell.current_occupant):
+                if not self.__check_rules(i, cell.current_occupant, isMove=True):
                     return False
 
 
