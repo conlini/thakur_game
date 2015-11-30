@@ -33,14 +33,15 @@ class Cell(object):
                 if self.current_occupant == Inhabitant.THAKUR and \
                                 self.next_cell.current_occupant == \
                                 Inhabitant.MAZDOOR:
-                    self.current_occupant = None
+                    self.next_cell.current_occupant = None
                 if self.current_occupant == self.next_cell.current_occupant \
                         and (self.current_occupant == Inhabitant.THAKUR or
                                      self.current_occupant == Inhabitant.MAZDOOR):
                     self.current_occupant = None
                     self.next_cell.current_occupant = None
-            self.next_cell.new_occupant = self.current_occupant
-            self.current_occupant = None
+            if self.current_occupant:
+                self.next_cell.new_occupant = self.current_occupant
+                self.current_occupant = None
 
     def commit_move(self):
         self.current_occupant = self.new_occupant
@@ -113,6 +114,9 @@ class Board(object):
             neigbouring_occupant = self.cells[nieghbour].current_occupant
             if neigbouring_occupant:
                 if neigbouring_occupant == Inhabitant.THAKUR and inhabitant == Inhabitant.THAKUR:
+                    print(
+                        "Ending world as 2 thakurs next to each other {}, {}".format(
+                            possible_pos, self.cells[nieghbour].number))
                     return False
         if inhabitant == Inhabitant.MAZDOOR:
             north = self.cells[
@@ -126,20 +130,31 @@ class Board(object):
             if (
                                 north and south and north == south and north == Inhabitant.THAKUR) or (
                                 east and west and east == west and east == Inhabitant.THAKUR):
+                print(
+                    "Ending world as 2 Thakurs sperated by Mazdoor at {}".format(
+                        possible_pos))
                 return False
             if isMove:
-                if (north and north == Inhabitant.MAZDOOR) or\
-                    (south and south == Inhabitant.MAZDOOR) or\
-                        (east and east ==Inhabitant.MAZDOOR) or\
+                if (north and north == Inhabitant.MAZDOOR) or \
+                        (south and south == Inhabitant.MAZDOOR) or \
+                        (east and east == Inhabitant.MAZDOOR) or \
                         (west and west == Inhabitant.MAZDOOR):
-                            if not north:
-                                self.cells[neighbour_cells[Board.Direction.NORTH]].occupy(Inhabitant.MAZDOOR)
-                            elif not south:
-                                self.cells[neighbour_cells[Board.Direction.SOUTH]].occupy(Inhabitant.MAZDOOR)
-                            elif not east:
-                                self.cells[neighbour_cells[Board.Direction.EAST]].occupy(Inhabitant.MAZDOOR)
-                            else:
-                                self.cells[neighbour_cells[Board.Direction.WEST]].occupy(Inhabitant.MAZDOOR)
+                    if not north:
+                        self.cells[
+                            neighbour_cells[Board.Direction.NORTH]].occupy(
+                            Inhabitant.MAZDOOR)
+                    elif not south:
+                        self.cells[
+                            neighbour_cells[Board.Direction.SOUTH]].occupy(
+                            Inhabitant.MAZDOOR)
+                    elif not east:
+                        self.cells[
+                            neighbour_cells[Board.Direction.EAST]].occupy(
+                            Inhabitant.MAZDOOR)
+                    else:
+                        self.cells[
+                            neighbour_cells[Board.Direction.WEST]].occupy(
+                            Inhabitant.MAZDOOR)
 
         return True
 
@@ -164,13 +179,16 @@ class Board(object):
             cell.move()
             cell.commit_move()
         has_occupant = False
+        pop = 0
         for cell in self.cells:
             if cell.current_occupant:
                 has_occupant = True
-                if not self.__check_rules(i, cell.current_occupant, isMove=True):
+                pop += 1
+                if not self.__check_rules(i, cell.current_occupant,
+                                          isMove=True):
+                    print("Ending world")
                     return False
-
-
+        # print(pop)
         return has_occupant
 
     def __repr__(self):
@@ -194,7 +212,7 @@ if __name__ == "__main__":
         thakurs = int(.05 * m * n)
         mazdoors = int(.2 * m * n)
     board = Board(m, n, thakurs, mazdoors)
-    print(board)
+    # print(board)
     # for i in range(iterations):
     #     board.move()
     #     print("================== ITERATION {} ==================".format(
