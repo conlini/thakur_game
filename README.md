@@ -16,7 +16,7 @@ Rules
 		1. 2 Thakur's can not be intially placed adjacent to each other(Diagnols do not count)
 		2. 2 Thakur's can not be placed on the same cell
 		3. 2 Thakur's shall not be intially placed in a single line with a single mazdoor in between(that is to say two Thakur's will not be seperated/connected by a single mazdoor){Diagnols do not count}
-	*  There will be 20% of mazdoors on the board randomly placed and adhering to rule 3 above
+	*  There will be 10% of mazdoors on the board randomly placed and adhering to rule 3 above
 * Each cell on the board will be assigned a Random direction(North/South/East/West).
 * The game runs as follows
 	* Each turn the inhabitants of the world move one step based on the direction as indicated by the block they occupy.
@@ -28,6 +28,8 @@ Rules
 	* Corners follow the same rule, except they land on the diagnolly opposite end
 	* If two mazdoor's land on the same cell, they die
 	* If two mazdoor's land next to each other, they produce a new mazdoor in any one of the adjacent cells
+	* If a mazdoor lands on a cell that is occupied by a Thakur, it gets converted to a thakur on any unoccupied cell
+	* If a Thakur lands on a cell with a Mazdoor, the Mazdoor dies
 	* Every 20 iterations, the directions of the cells change
 
 Objective: Develop a board with longest living inhabitants(max iterations)
