@@ -30,6 +30,6 @@ Rules
 	* If two mazdoor's land next to each other, they produce a new mazdoor in any one of the adjacent cells
 	* If a mazdoor lands on a cell that is occupied by a Thakur, it gets converted to a thakur on any unoccupied cell
 	* If a Thakur lands on a cell with a Mazdoor, the Mazdoor dies
-	* Every 20 iterations, the directions of the cells change
+	* Every end of the iteration, the directions of the cells change
 
 Objective: Develop a board with longest living inhabitants(max iterations)

@@ -222,7 +222,6 @@ if __name__ == "__main__":
         print(board)
         living = board.move()
         iterations += 1
-        if iterations % 21 == 0:
-            board.assign_directions()
+        board.assign_directions()
         
     print("Gamed ended with {} iterations".format(iterations))
