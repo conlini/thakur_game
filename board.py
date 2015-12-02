@@ -167,7 +167,7 @@ class Board(object):
                 possible_pos = randint(0, m * n)
             self.cells[possible_pos].occupy(Inhabitant.THAKUR)
         for i in range(mazdoors):
-            possible_pos = randint(0, (m * n) - 1)
+            possible_pos = randint(0, (m * n))
             while (self.cells[
                        possible_pos].current_occupant is not None and self.__check_rules(
                 possible_pos, Inhabitant.MAZDOOR)):
@@ -204,28 +204,25 @@ class Board(object):
 
 
 if __name__ == "__main__":
-    if len(sys.argv) == 5:
-        m, n, thakurs, mazdoors = sys.argv[1:]
+    print(sys.argv)
+    if len(sys.argv) == 3:
+        m = int(sys.argv[1])
+        n = int(sys.argv[2])
     else:
         m, n = [int(a) for a in input(
             "Enter m, n:").strip().split(",")]
-        thakurs = int(.05 * m * n)
-        mazdoors = int(.2 * m * n)
+    thakurs = int(.05 * m * n)
+    mazdoors = int(.2 * m * n)
     board = Board(m, n, thakurs, mazdoors)
-    # print(board)
-    # for i in range(iterations):
-    #     board.move()
-    #     print("================== ITERATION {} ==================".format(
-    #         iterations))
-    #     print(board)
     living = True
-    iterations = 0
+    iterations = 1
     while (living):
-        living = board.move()
-        iterations += 1
-        if iterations % 20 == 0:
-            board.assign_directions()
         print("================== ITERATION {} ==================".format(
             iterations))
         print(board)
+        living = board.move()
+        iterations += 1
+        if iterations % 21 == 0:
+            board.assign_directions()
+        
     print("Gamed ended with {} iterations".format(iterations))
