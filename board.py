@@ -15,37 +15,44 @@ class Cell(object):
         self.number = number
         self.next_cell = None
         self.current_occupant = None
-        self.new_occupant = None
+        self.new_occupant = []
 
     def set_next_cell(self, next_cell):
         self.next_cell = next_cell
 
     def occupy(self, inhabitant):
+        '''
+        initial occupation
+        :param inhabitant:
+        :return:
+        '''
         self.current_occupant = inhabitant
 
+    def stage(self, new_occupant):
+        '''
+        stage the next set of folks interested in moving to this cell
+        :param new_occupant:
+        :return:
+        '''
+        self.new_occupant.append(new_occupant)
+
     def move(self):
+        '''
+        Moves this cells occupants to the next cell
+        :return:
+        '''
         if self.current_occupant:
-            if self.next_cell.current_occupant:
-                if self.current_occupant == Inhabitant.MAZDOOR and \
-                                self.next_cell.current_occupant == \
-                                Inhabitant.THAKUR:
-                    self.current_occupant = Inhabitant.THAKUR
-                if self.current_occupant == Inhabitant.THAKUR and \
-                                self.next_cell.current_occupant == \
-                                Inhabitant.MAZDOOR:
-                    self.next_cell.current_occupant = None
-                if self.current_occupant == self.next_cell.current_occupant \
-                        and (self.current_occupant == Inhabitant.THAKUR or
-                                     self.current_occupant == Inhabitant.MAZDOOR):
-                    self.current_occupant = None
-                    self.next_cell.current_occupant = None
-            if self.current_occupant:
-                self.next_cell.new_occupant = self.current_occupant
-                self.current_occupant = None
+            self.next_cell.stage(self.current_occupant)
+            # self.current_occupant = None
 
     def commit_move(self):
-        self.current_occupant = self.new_occupant
-        self.new_occupant = None
+        '''
+        finalize the move of this iteration
+        :return:
+        '''
+        if self.new_occupant:
+            self.current_occupant = self.new_occupant[0]
+        self.new_occupant.clear()
 
     def __repr__(self):
         if self.current_occupant:
@@ -78,12 +85,22 @@ class Board(object):
         self.populate_board(thakurs, mazdoors)
 
     def assign_directions(self):
+        '''
+        assigna one random direction to each cell for its next cell
+        :return:
+        '''
         for i, cell in enumerate(self.cells):
             direction = choice(list(Board.Direction))
             cell_pos = self.__get_next_position(direction, i)
             cell.next_cell = self.cells[cell_pos]
 
     def __get_next_position(self, direction, i):
+        '''
+        Given a cell and direction, defines the 4 possible locaton that its is surrounded by
+        :param direction:
+        :param i:
+        :return:
+        '''
         if direction is Board.Direction.NORTH:
             if (i + self.n) >= (m * n):
                 cell_pos = (i + self.n) - m * n
@@ -96,10 +113,14 @@ class Board(object):
                 cell_pos = i - self.n
         elif direction is Board.Direction.EAST:
             cell_pos = i - 1
+            if (i) % n == 0:
+                cell_pos = i + n -1
             if cell_pos < 0:
                 cell_pos = cell_pos + self.n
         else:
             cell_pos = i + 1
+            if(i + 1) % n == 0:
+                cell_pos = i - n + 1
             if cell_pos >= m * n:
                 cell_pos = cell_pos - self.n
         return cell_pos
@@ -109,14 +130,12 @@ class Board(object):
         for dir in list(Board.Direction):
             nieghbour = self.__get_next_position(dir, possible_pos)
             neighbour_cells[dir] = nieghbour
+        # print(possible_pos, neighbour_cells)
 
         for dir, cell in neighbour_cells.items():
-            neigbouring_occupant = self.cells[nieghbour].current_occupant
+            neigbouring_occupant = self.cells[cell].current_occupant
             if neigbouring_occupant:
                 if neigbouring_occupant == Inhabitant.THAKUR and inhabitant == Inhabitant.THAKUR:
-                    print(
-                        "Ending world as 2 thakurs next to each other {}, {}".format(
-                            possible_pos, self.cells[nieghbour].number))
                     return False
         if inhabitant == Inhabitant.MAZDOOR:
             north = self.cells[
@@ -134,45 +153,50 @@ class Board(object):
                     "Ending world as 2 Thakurs sperated by Mazdoor at {}".format(
                         possible_pos))
                 return False
-            if isMove:
-                if (north and north == Inhabitant.MAZDOOR) or \
-                        (south and south == Inhabitant.MAZDOOR) or \
-                        (east and east == Inhabitant.MAZDOOR) or \
-                        (west and west == Inhabitant.MAZDOOR):
-                    if not north:
-                        self.cells[
-                            neighbour_cells[Board.Direction.NORTH]].occupy(
-                            Inhabitant.MAZDOOR)
-                    elif not south:
-                        self.cells[
-                            neighbour_cells[Board.Direction.SOUTH]].occupy(
-                            Inhabitant.MAZDOOR)
-                    elif not east:
-                        self.cells[
-                            neighbour_cells[Board.Direction.EAST]].occupy(
-                            Inhabitant.MAZDOOR)
-                    else:
-                        self.cells[
-                            neighbour_cells[Board.Direction.WEST]].occupy(
-                            Inhabitant.MAZDOOR)
-
         return True
 
+    def __check_first_placement(self, possible_pos, inhabitant):
+        neighbour_cells = {}
+        for dir in list(Board.Direction):
+            nieghbour = self.__get_next_position(dir, possible_pos)
+            neighbour_cells[dir] = nieghbour
+        print(possible_pos, neighbour_cells)
+
     def populate_board(self, thakurs, mazdoors):
+        '''
+        Put folks on the board initally
+        :param thakurs:
+        :param mazdoors:
+        :return:
+        '''
         for i in range(thakurs):
-            possible_pos = randint(0, m * n)
-            while (self.cells[
-                       possible_pos].current_occupant is not None and self.__check_rules(
-                possible_pos, Inhabitant.THAKUR)):
-                possible_pos = randint(0, m * n)
+            possible_pos = self.__get_next_random_empty_cell(Inhabitant.THAKUR)
             self.cells[possible_pos].occupy(Inhabitant.THAKUR)
         for i in range(mazdoors):
-            possible_pos = randint(0, (m * n))
-            while (self.cells[
-                       possible_pos].current_occupant is not None and self.__check_rules(
-                possible_pos, Inhabitant.MAZDOOR)):
-                possible_pos = randint(0, m * n)
+            possible_pos = self.__get_next_random_empty_cell(Inhabitant.MAZDOOR)
             self.cells[possible_pos].occupy(Inhabitant.MAZDOOR)
+
+    def __get_next_random_empty_cell(self, type):
+        '''
+        Given a type gives a possible random cell to place a inhabitant
+        :param type:
+        :return:
+        '''
+        possible_pos = 0
+        can_occupy = False
+        while (not can_occupy):
+            possible_pos = randint(0, (m * n) - 1)
+            if self.cells[possible_pos].current_occupant:
+                can_occupy = False
+                continue
+            else:
+                can_occupy = self.__check_rules(possible_pos, type)
+
+        # while (self.cells[
+        #            possible_pos].current_occupant is not None and self.__check_first_placement(
+        #     possible_pos, type)):
+        #     possible_pos = randint(0, m * n)
+        return possible_pos
 
     def move(self):
         for i, cell in enumerate(self.cells):
@@ -213,9 +237,11 @@ if __name__ == "__main__":
             "Enter m, n:").strip().split(",")]
     thakurs = int(.05 * m * n)
     mazdoors = int(.2 * m * n)
+    print(thakurs, mazdoors)
     board = Board(m, n, thakurs, mazdoors)
     living = True
     iterations = 1
+    print(board)
     while (living):
         print("================== ITERATION {} ==================".format(
             iterations))
@@ -223,5 +249,5 @@ if __name__ == "__main__":
         living = board.move()
         iterations += 1
         board.assign_directions()
-        
+
     print("Gamed ended with {} iterations".format(iterations))
